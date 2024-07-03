@@ -11,8 +11,6 @@ from torchvision import datasets
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'  # GPU 사용 가능하면 사용, 아니면 CPU 사용
 
 from google.colab import drive
@@ -83,9 +81,7 @@ def training_loop(model, criterion, optimizer, train_loader, valid_loader, epoch
                   f'Train loss: {train_loss:.4f}\t'
                   f'Valid loss: {valid_loss:.4f}\t'
                   f'Train accuracy: {100 * train_acc:.2f}\t'
-                  f'Valid accuracy: {100 * valid_acc:.2f}')
-
-    
+                  f'Valid accuracy: {100 * valid_acc:.2f}') 
 
     return model, optimizer, (train_losses, valid_losses)
 
@@ -142,11 +138,6 @@ test_dataset = datasets.MNIST(root='mnist_data', train=False, transform=transfor
 train_loader = DataLoader(dataset=train_dataset, batch_size=Batch_size, shuffle=True)  # 훈련 데이터 로더
 valid_loader = DataLoader(dataset=valid_dataset, batch_size=Batch_size, shuffle=False)  # 검증 데이터 로더
 test_loader = DataLoader(dataset=test_dataset, batch_size=Batch_size, shuffle=False)  # 테스트 데이터 로더
-
-# 미리보기 이미지 출력
-ROW_IMG = 10  # 미리보기 이미지 설정
-N_ROWS = 5
-
 
 
 torch.manual_seed(Ramdom_seed)  # 랜덤 시드 설정
