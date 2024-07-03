@@ -20,7 +20,7 @@ drive.mount('/content/drive')  # 구글 드라이브 마운트
 Ramdom_seed = 42  # 랜덤 시드 설정
 Learning_rate = 0.001  # 학습률 설정
 Batch_size = 32  # 배치 사이즈 설정
-N_epochs = 15  # 에폭 수 설정
+N_epochs = 100  # 에폭 수 설정
 Img_size = 32  # 이미지 사이즈 설정
 N_classes = 10  # 클래스 수 설정
 
