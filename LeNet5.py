@@ -11,6 +11,9 @@ from torchvision import datasets
 import numpy as np
 import matplotlib.pyplot as plt
 
+from datetime import datetime
+from pytz import timezone
+
 DEVICE = 'cuda' if torch.cuda.is_available() else 'cpu'  # GPU 사용 가능하면 사용, 아니면 CPU 사용
 
 from google.colab import drive
