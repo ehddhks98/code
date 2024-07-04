@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # module
 import torch
 import torch.nn as nn
@@ -25,7 +24,7 @@ Learning_rate = 0.001  # 학습률 설정
 Batch_size = 32  # 배치 사이즈 설정
 N_epochs = 100  # 에폭 수 설정
 Img_size = 32  # 이미지 사이즈 설정
-N_classes = 10  # 클래스 수 설정
+N_classes = 10  # 클래스 수 설정(0~9)
 
 current_time = datetime.now(timezone('Asia/Seoul')).strftime("%Y-%m-%d_%H-%M-%S")
 log_dir = f'logs/{current_time}'
@@ -126,7 +125,7 @@ class LeNet5(nn.Module):  # LeNet-5 모델 정의
 
     def forward(self, x):  # 순전파 정의
         x = self.feature_extractor(x)
-        x = torch.flatten(x, 1)
+        x = torch.flatten(x, 1) 
         logits = self.classifier(x)
         probs = F.softmax(logits, dim=1)  # 확률 분포 계산
         return logits, probs
