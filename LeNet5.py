@@ -149,13 +149,3 @@ optimizer = torch.optim.Adam(model.parameters(), lr=Learning_rate)  # 옵티마�
 
 model, optimizer, _ = training_loop(model, criterion, optimizer, train_loader, valid_loader, N_epochs, DEVICE)  # 모델 훈련 및 검증
 
-# 모델 테스트 함수 정의
-def test_model(model, test_loader, device):
-    test_acc = get_accuracy(model, test_loader, device=device)  # 테스트 데이터 정확도 계산
-    print(f'Test accuracy: {100 * test_acc:.2f}')
-    return test_acc
-
-# 최종 모델 테스트
-test_acc = test_model(model, test_loader, DEVICE)
-writer.add_scalar('Accuracy/final_test', test_acc)
-
