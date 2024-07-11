@@ -3,6 +3,7 @@ from torchvision import datasets
 from torchvision import transforms
 from PIL import Image
 
+
 def get_dataset(dataset_name, batch_size=32):
   transform = transforms.Compose([
     transforms.ToTensor(),
@@ -20,9 +21,7 @@ def get_dataset(dataset_name, batch_size=32):
   else:
     raise ValueError(f"Invalid dataset name: {dataset_name}")
   
-
   train_loader = torch.utils.data.DataLoader(train_set, batch_size=batch_size, shuffle=True)
   val_loader = torch.utils.data.DataLoader(val_set, batch_size=batch_size, shuffle=False)
-
   
   return train_loader, val_loader, num_classes
