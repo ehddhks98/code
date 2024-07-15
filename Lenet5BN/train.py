@@ -5,7 +5,7 @@ from torchvision import datasets
 from torchvision import transforms
 
 def train(model, criterion, optimizer, epochs, train_loader, val_loader, device):
-  for epoch in range(epochs):
+    for epoch in range(epochs):
 
     # 훈련 단계
         model.train()
@@ -26,9 +26,7 @@ def train(model, criterion, optimizer, epochs, train_loader, val_loader, device)
             # 현재 배치 손실 계산
             running_loss += loss.item()
 
-            # 진행 상황 출력
-            epoch_train_loss = running_loss / len(train_loader)
-            print(f'Epoch {epoch + 1} Training Loss: {epoch_train_loss:.4f}')
+            
 
         # 검증 단계
         model.eval()
