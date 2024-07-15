@@ -2,6 +2,7 @@ import torch
 from torchvision import datasets
 from torchvision import transforms
 
+
 def get_dataset(dataset_name, batch_size=32):
     transform = transforms.Compose([
         transforms.ToTensor(),

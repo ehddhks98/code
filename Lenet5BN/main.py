@@ -8,7 +8,6 @@ from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
 import torch.optim as optim
-
 from module import LeNet5BN # Import the LeNet5BN class
 from train import train # Import the train function
 from dataset import get_dataset # Import the get_dataset function
