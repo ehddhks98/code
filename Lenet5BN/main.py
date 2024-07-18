@@ -16,7 +16,7 @@ from dataset import get_dataset # Import the get_dataset function
 def main():
     # 파라미터 설정
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=10, help='에포크 수')
+    parser.add_argument('--epochs', type=int, default=100, help='에포크 수')
     parser.add_argument('--lr', type=float, default=0.001, help='학습률')
     parser.add_argument('--batch_size', type=int, default=32, help='배치 크기')
     parser.add_argument('--dataset_name', type=str, default='cifar10', choices=['cifar10', 'cifar100'], help='데이터셋 종류')  
