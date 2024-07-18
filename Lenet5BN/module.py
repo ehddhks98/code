@@ -1,5 +1,6 @@
 import torch.nn as nn
 
+
 class LeNet5BN(nn.Module):
     def __init__(self, num_classes):
         super().__init__()
