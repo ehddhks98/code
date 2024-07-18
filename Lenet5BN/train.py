@@ -3,8 +3,11 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets
 from torchvision import transforms
+from torch.utils.tensorboard import SummaryWriter
 
 def train(model, criterion, optimizer, epochs, train_loader, val_loader, device):
+    writer = SummaryWriter()
+
     for epoch in range(epochs):
 
     # 훈련 단계
@@ -25,6 +28,8 @@ def train(model, criterion, optimizer, epochs, train_loader, val_loader, device)
 
             # 현재 배치 손실 계산
             running_loss += loss.item()
+
+            writer.add_scalar('Train Loss', loss.item(), epoch)
 
             
 
@@ -49,4 +54,11 @@ def train(model, criterion, optimizer, epochs, train_loader, val_loader, device)
         # 평균 손실값 및 정확도 계산
         test_loss /= len(val_loader)
         test_acc = accuracy / len(val_loader.dataset)
+
+        # TensorBoard에 검증 손실값 및 정확도 기록
+        writer.add_scalar('Val Loss', test_loss, epoch)
+        writer.add_scalar('Val Acc', test_acc, epoch)
+
         print(f'Test Epoch {epoch + 1} Loss: {test_loss:.4f} Acc: {test_acc:.4f}')
+    
+    writer.close()
