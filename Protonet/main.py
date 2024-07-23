@@ -1,4 +1,5 @@
 from PIL import Image
+import argparse
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,29 +8,26 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 import numpy as np
 import random
-import argparse
+
 
 from dataset import OmniglotDataset
+from dataset import get_dataloaders
 from embedding import CNNEncoder
 from module import PrototypicalNetwork
-from train import train_prototypical_network
-from test import test_prototypical_network
+from train import train_protonet
+from test import test_protonet
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def main(args):
-    transform = transforms.Compose([transforms.Grayscale(), transforms.ToTensor()])
-    train_dataset = OmniglotDataset(root=args.data_path, transform=transform, background=True)
-    test_dataset = OmniglotDataset(root=args.data_path, transform=transform, background=False)
-    train_loader = DataLoader(train_dataset, batch_size=args.batch_size, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=args.batch_size, shuffle=False)
-
-    encoder = CNNEncoder().cuda()
-    model = PrototypicalNetwork(encoder).cuda()
+    
+    encoder = CNNEncoder().to(device)
+    model = PrototypicalNetwork(encoder).to(device)
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
-
-    for epoch in range(args.epochs):
-        train_prototypical_network(model, train_loader, optimizer, args.n_way_train, args.n_support, args.n_query_train)
-        acc = test_prototypical_network(model, test_loader, args.n_way_test, args.n_support, args.n_query_test)
-        print(f"Epoch {epoch+1}, Test Accuracy: {acc:.4f}")
+    train_protonet(model, train_loader, optimizer, args.n_way_train, args.n_support, args.n_query_train, device)
+    acc = test_protonet(model, test_loader, args.n_way_test, args.n_support, args.n_query_test, device)
+   
+    
+    print(f"Epoch {epoch+1}, Test Accuracy: {acc:.4f}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Prototypical Networks for Few-shot Learning on Omniglot")
