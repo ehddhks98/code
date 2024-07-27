@@ -1,24 +1,14 @@
-import random
+from easyfsl.samplers import TaskSampler
+from torch.utils.data import DataLoader
 
-def create_episode(data, classes, n_way, n_support, n_query):
-    # n_way 개의 클래스를 랜덤으로 선택
-    selected_classes = random.sample(classes, n_way)
-    
-    support_indices = []  # 지원 샘플 인덱스를 저장할 리스트
-    query_indices = []    # 쿼리 샘플 인덱스를 저장할 리스트
-    
-    for cls in selected_classes:
-        # 현재 클래스에 해당하는 모든 데이터 인덱스를 가져옴
-        cls_indices = [i for i, t in enumerate(data.targets) if t == cls]
-        
-        # 지원 샘플로 사용할 n_support개의 인덱스를 랜덤으로 선택
-        support = random.sample(cls_indices, n_support)
-        
-        # 나머지 샘플들 중에서 쿼리 샘플로 사용할 n_query개의 인덱스를 랜덤으로 선택
-        query = random.sample([i for i in cls_indices if i not in support], n_query)
-        
-        # 지원 샘플과 쿼리 샘플 인덱스를 각각 리스트에 추가
-        support_indices.extend(support)
-        query_indices.extend(query)
-    
-    return support_indices, query_indices  # 지원 샘플 인덱스와 쿼리 샘플 인덱스를 반환
+def get_dataloaders(train_set, test_set, n_way, n_shot, n_query, n_training_episodes, n_evaluation_tasks):
+    train_set.get_labels = lambda: [instance[1] for instance in train_set._flat_character_images]
+    test_set.get_labels = lambda: [instance[1] for instance in test_set._flat_character_images]
+
+    train_sampler = TaskSampler(train_set, n_way=n_way, n_shot=n_shot, n_query=n_query, n_tasks=n_training_episodes)
+    test_sampler = TaskSampler(test_set, n_way=n_way, n_shot=n_shot, n_query=n_query, n_tasks=n_evaluation_tasks)
+
+    train_loader = DataLoader(train_set, batch_sampler=train_sampler, num_workers=12, pin_memory=True, collate_fn=train_sampler.episodic_collate_fn)
+    test_loader = DataLoader(test_set, batch_sampler=test_sampler, num_workers=12, pin_memory=True, collate_fn=test_sampler.episodic_collate_fn)
+
+    return train_loader, test_loader

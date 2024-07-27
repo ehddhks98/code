@@ -1,17 +1,26 @@
-import torch.nn as nn
-import torch.optim as optim
-import numpy as np
 import torch
-from episode import create_episode
+import torch.nn as nn
+from torchvision.models import resnet18
 
-class PrototypicalNetwork(nn.Module):
-    def __init__(self, encoder):
-        super(PrototypicalNetwork, self).__init__()
-        self.encoder = encoder
-    
-    def forward(self, support, query, n_way, n_support, n_query):
-        support = self.encoder(support)
-        query = self.encoder(query)
-        prototypes = support.view(n_way, n_support, -1).mean(1)
-        distances = torch.cdist(query, prototypes)
-        return distances
+class PrototypicalNetworks(nn.Module):
+    def __init__(self, backbone: nn.Module):
+        super(PrototypicalNetworks, self).__init__()
+        self.backbone = backbone
+
+    def forward(self, support_images: torch.Tensor, support_labels: torch.Tensor, query_images: torch.Tensor) -> torch.Tensor:
+        z_support = self.backbone.forward(support_images)
+        z_query = self.backbone.forward(query_images)
+        
+        n_way = len(torch.unique(support_labels))
+        
+        z_proto = torch.cat([z_support[torch.nonzero(support_labels == label)].mean(0) for label in range(n_way)])
+        
+        dists = torch.cdist(z_query, z_proto)
+        scores = -dists
+        return scores
+
+def create_model():
+    convolutional_network = resnet18(pretrained=True)
+    convolutional_network.fc = nn.Flatten()
+    model = PrototypicalNetworks(convolutional_network).cuda()
+    return model

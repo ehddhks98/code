@@ -1,20 +1,23 @@
-from episode import create_episode
 import torch
+from tqdm import tqdm
+from torch.utils.data import DataLoader
 
+def evaluate_on_one_task(model, support_images, support_labels, query_images, query_labels):
+    return (
+        torch.max(
+            model(support_images.cuda(), support_labels.cuda(), query_images.cuda()).detach().data, 1
+        )[1] == query_labels.cuda()
+    ).sum().item(), len(query_labels)
 
-def test_protonet(model, test_loader, n_way_test, n_support, n_query_test, device):
+def evaluate(model, data_loader):
+    total_predictions = 0
+    correct_predictions = 0
+
     model.eval()
-    correct = 0
-    total = 0
     with torch.no_grad():
-        for batch_idx, (data, _, indices) in enumerate(test_loader):
-            support_indices, query_indices = create_episode(data, test_loader.dataset.selected_classes, n_way_test, n_support, n_query_test)
-            support = torch.stack([data[i][0] for i in support_indices]).to(device)
-            query = torch.stack([data[i][0] for i in query_indices]).to(device)
-            targets = torch.arange(n_way_test).unsqueeze(1).expand(n_way_test, n_query_test).reshape(-1).to(device)
+        for episode_index, (support_images, support_labels, query_images, query_labels, class_ids) in tqdm(enumerate(data_loader), total=len(data_loader)):
+            correct, total = evaluate_on_one_task(model, support_images, support_labels, query_images, query_labels)
+            total_predictions += total
+            correct_predictions += correct
 
-            distances = model(support, query, n_way_test, n_support, n_query_test)
-            preds = torch.argmin(distances, dim=1)
-            correct += (preds == targets).sum().item()
-            total += targets.size(0)
-    return correct / total
+    return correct_predictions, total_predictions
