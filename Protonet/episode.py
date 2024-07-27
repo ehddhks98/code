@@ -1,9 +1,11 @@
 from easyfsl.samplers import TaskSampler
 from torch.utils.data import DataLoader
 
+
+
+
 def get_dataloaders(train_set, test_set, n_way, n_shot, n_query, n_training_episodes, n_evaluation_tasks):
-    train_set.get_labels = lambda: [instance[1] for instance in train_set._flat_character_images]
-    test_set.get_labels = lambda: [instance[1] for instance in test_set._flat_character_images]
+    
 
     train_sampler = TaskSampler(train_set, n_way=n_way, n_shot=n_shot, n_query=n_query, n_tasks=n_training_episodes)
     test_sampler = TaskSampler(test_set, n_way=n_way, n_shot=n_shot, n_query=n_query, n_tasks=n_evaluation_tasks)

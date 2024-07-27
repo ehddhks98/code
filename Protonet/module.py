@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torchvision.models import resnet18
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PrototypicalNetworks(nn.Module):
     def __init__(self, backbone: nn.Module):
@@ -22,5 +23,5 @@ class PrototypicalNetworks(nn.Module):
 def create_model():
     convolutional_network = resnet18(pretrained=True)
     convolutional_network.fc = nn.Flatten()
-    model = PrototypicalNetworks(convolutional_network).cuda()
+    model = PrototypicalNetworks(convolutional_network).to(device)
     return model

@@ -2,11 +2,12 @@ import torch
 from torch import nn, optim
 from tqdm import tqdm
 from easyfsl.utils import sliding_average
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def fit(model, optimizer, criterion, support_images, support_labels, query_images, query_labels):
     optimizer.zero_grad()
-    classification_scores = model(support_images.cuda(), support_labels.cuda(), query_images.cuda())
-    loss = criterion(classification_scores, query_labels.cuda())
+    classification_scores = model(support_images.to(device), support_labels.to(device), query_images.to(device))
+    loss = criterion(classification_scores, query_labels.to(device))
     loss.backward()
     optimizer.step()
     return loss.item()

@@ -1,5 +1,6 @@
 from PIL import Image
 import argparse
+import torch
 from torch import nn, optim
 from dataset import get_datasets
 from module import create_model
@@ -8,6 +9,8 @@ from train import train
 from test import evaluate
 
 def main(args):
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
     train_set, test_set = get_datasets(args.image_size)
     train_loader, test_loader = get_dataloaders(train_set, test_set, args.n_way, args.n_shot, args.n_query, args.n_training_episodes, args.n_evaluation_tasks)
 
