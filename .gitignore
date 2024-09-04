@@ -1,0 +1,11 @@
+data/
+MatchingNet/__pycache__/
+PrototypeNet/__pycache__/
+RelationNet/__pycache__/
+baseline/__pycache__/
+baseline++/__pycache__/
+Few shot classification/__pycache__/
+MatchingNet/runs/
+RelationNet/runs/
+baseline/runs/
+baseline++/runs/
