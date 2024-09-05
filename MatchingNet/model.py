@@ -68,7 +68,7 @@ class MatchingNet(nn.Module):
         """
         hidden_size = self.bi_lstm.hidden_size 
         init_sup_data = init_sup_data.squeeze().unsqueeze(0) #  (5,64,1,1) -> (1, 5, 64)
-        hidden_state, _ = self.bi_lstm(init_sup_data) # (1, 5, 128) bidrectional로 출력하면 뭐가 생기지?
+        hidden_state, _ = self.bi_lstm(init_sup_data) # (1, 5, 128) bidrectional로 출력
         hidden_state = hidden_state.squeeze(0) # (5,128)
         support_embedding = init_sup_data.squeeze(0) + hidden_state[:,:hidden_size] + hidden_state[:,hidden_size:]
         return support_embedding # (5,64)
